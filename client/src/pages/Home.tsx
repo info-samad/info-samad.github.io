@@ -27,6 +27,7 @@ import ScrollJourneyHero from "@/components/ScrollJourneyHero";
 const navItems = [
   { label: "عن المعمل", href: "#about" },
   { label: "المنتج", href: "#product" },
+  { label: "الإعلانات", href: "#campaigns" },
   { label: "حلولنا", href: "#solutions" },
   { label: "أدوات المزرعة", href: "#tools" },
   { label: "الاستشارات", href: "#consulting" },
@@ -103,6 +104,31 @@ function Header() {
 
 function Hero() {
   return <ScrollJourneyHero />;
+}
+
+function Campaigns() {
+  return (
+    <section className="campaigns-section" id="campaigns" aria-labelledby="campaigns-title">
+      <div className="campaigns-inner">
+        <div className="campaign-copy">
+          <SectionEyebrow>إرشادات موسمية · نهاية موسم القطاف</SectionEyebrow>
+          <h2 id="campaigns-title">أهم المعاملات الزراعية بعد قطاف الزيتون</h2>
+          <p>تعرف على خطوات العناية بالبستان بعد القطاف، من تنظيف الأرض إلى التسميد العضوي المناسب لاحتياج الأرض والموسم.</p>
+          <ul className="campaign-highlights">
+            <li>تنظيف أرض البستان بعد انتهاء القطاف.</li>
+            <li>الحراثة السطحية والتقليم السنوي الخفيف.</li>
+            <li>التسميد العضوي وفق بيانات المنتج وحالة التربة.</li>
+          </ul>
+          <a className="button button--campaign" href="#contact">استفسر عن المنتج والإرشاد الزراعي <ArrowLeft size={17} aria-hidden="true" /></a>
+          <small className="campaign-note">الجرعات والتوقيت حسب بطاقة المنتج واحتياج التربة؛ استشر المعمل قبل التطبيق.</small>
+        </div>
+        <a className="campaign-poster" href={`${import.meta.env.BASE_URL}campaigns/olive-harvest-postharvest.png`} target="_blank" rel="noopener noreferrer" aria-label="عرض ملصق إرشادات ما بعد قطاف الزيتون بالحجم الكامل">
+          <img src={`${import.meta.env.BASE_URL}campaigns/olive-harvest-postharvest.png`} alt="ملصق الزراعة النظيفة: أهم المعاملات الزراعية بعد قطاف الزيتون، ويتضمن خطوات تنظيف الأرض والرش الوقائي والحراثة والتقليم والتسميد العضوي" loading="lazy" />
+          <span>افتح الملصق بالحجم الكامل ↗</span>
+        </a>
+      </div>
+    </section>
+  );
 }
 
 function About() {
@@ -362,6 +388,7 @@ export default function Home() {
       <Header />
       <main>
         <Hero />
+        <Campaigns />
         <About />
         <Product />
         <Solutions />
