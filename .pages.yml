@@ -1,0 +1,57 @@
+media:
+  - name: campaign-images
+    label: صور الإعلانات
+    input: client/public/campaigns
+    output: /campaigns
+    rename: safe
+    extensions: [png, jpg, jpeg, webp]
+    categories: [image]
+content:
+  - name: campaigns
+    label: الإعلانات والعروض
+    type: file
+    path: client/public/campaigns.json
+    format: json
+    list: true
+    fields:
+      - name: title
+        label: عنوان الإعلان
+        type: string
+        required: true
+      - name: season
+        label: المرحلة أو الموسم
+        type: string
+        required: true
+      - name: description
+        label: وصف مختصر
+        type: text
+        required: true
+      - name: image
+        label: صورة الإعلان
+        type: image
+        required: true
+        options:
+          media: campaign-images
+          path: client/public/campaigns
+          extensions: [png, jpg, jpeg, webp]
+          rename: safe
+      - name: imageAlt
+        label: وصف الصورة لقارئات الشاشة
+        type: string
+        required: true
+      - name: published
+        label: نشر الإعلان
+        type: boolean
+        default: false
+      - name: startDate
+        label: يبدأ العرض بتاريخ (اختياري)
+        type: date
+        default: ""
+        options:
+          format: yyyy-MM-dd
+      - name: endDate
+        label: ينتهي العرض بتاريخ (اختياري)
+        type: date
+        default: ""
+        options:
+          format: yyyy-MM-dd

@@ -1,4 +1,4 @@
-import { useMemo, useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
 import {
   ArrowLeft,
   ArrowUpLeft,
@@ -103,6 +103,78 @@ function Header() {
 
 function Hero() {
   return <ScrollJourneyHero />;
+}
+
+type CampaignRecord = {
+  title: string;
+  season: string;
+  description: string;
+  image: string;
+  imageAlt: string;
+  published: boolean;
+  startDate?: string;
+  endDate?: string;
+};
+
+function localDateString() {
+  const parts = new Intl.DateTimeFormat("en", {
+    timeZone: "Asia/Damascus",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date());
+  const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+  return `${values.year}-${values.month}-${values.day}`;
+}
+
+function Campaigns() {
+  const [campaigns, setCampaigns] = useState<CampaignRecord[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch(`${import.meta.env.BASE_URL}campaigns.json?updated=${Date.now()}`, { cache: "no-store" })
+      .then((response) => (response.ok ? response.json() : []))
+      .then((data: unknown) => {
+        if (!cancelled && Array.isArray(data)) setCampaigns(data as CampaignRecord[]);
+      })
+      .catch(() => undefined);
+    return () => { cancelled = true; };
+  }, []);
+
+  const today = localDateString();
+  const activeCampaigns = campaigns.filter((campaign) =>
+    campaign.published === true &&
+    (!campaign.startDate || campaign.startDate <= today) &&
+    (!campaign.endDate || campaign.endDate >= today),
+  );
+
+  if (activeCampaigns.length === 0) return null;
+
+  return (
+    <section className="campaigns-section" id="campaigns" aria-labelledby="campaigns-title">
+      <div className="section-topline campaigns-heading">
+        <SectionHeading eyebrow="إعلانات المعمل" title="عروض وإرشادات موسمية" description="آخر الإعلانات والعروض التي أضافها المعمل." />
+      </div>
+      <div className="campaign-grid">
+        {activeCampaigns.map((campaign, index) => {
+          const poster = /^https?:\/\//i.test(campaign.image)
+            ? campaign.image
+            : `${import.meta.env.BASE_URL}${campaign.image.replace(/^\/+/, "")}`;
+          return (
+            <article className="campaign-card" key={`${campaign.title}-${index}`}>
+              <div className="campaign-top"><span>{campaign.season}</span><span>إعلان موسمي</span></div>
+              <h3>{campaign.title}</h3>
+              <p className="campaign-concept">{campaign.description}</p>
+              <a className="campaign-poster-link" href={poster} target="_blank" rel="noopener noreferrer" aria-label={`فتح ملصق ${campaign.title} بالحجم الكامل`}>
+                <img className="campaign-poster-image" src={poster} alt={campaign.imageAlt || campaign.title} loading="lazy" />
+              </a>
+              <a className="button button--green campaign-inquiry" href="#contact">استفسر عن الإعلان <ArrowLeft size={16} aria-hidden="true" /></a>
+            </article>
+          );
+        })}
+      </div>
+    </section>
+  );
 }
 
 function About() {
@@ -362,6 +434,7 @@ export default function Home() {
       <Header />
       <main>
         <Hero />
+        <Campaigns />
         <About />
         <Product />
         <Solutions />
